@@ -1,0 +1,61 @@
+Using Cpyher language with desktop Neo4j I created this code for loading tables with relationships
+
+-- Creating node and index for Movies 
+LOAD CSV WITH HEADERS FROM "file:///C:/movies.csv" AS row
+CREATE (:Movies {movieId: row.movieId, title: row.title, genres: row.genres});
+CREATE INDEX ON :Movies(movieId);
+
+-- Creating node and index for Ratings 
+LOAD CSV WITH HEADERS FROM "file:///C:/ratings.csv" AS row
+CREATE (:Ratings {userId: row.userId, movieId: row.movieId, rating: row.rating, timestamp: row.timestamp});
+CREATE INDEX ON :Ratings(userId);
+
+-- Creating node and index for Tags 
+LOAD CSV WITH HEADERS FROM "file:///C:/tags.csv" AS row
+CREATE (:Tags {userId: row.userId, movieId: row.movieId, tag: row.tag, timestamp: row.timestamp});
+CREATE INDEX ON :Tags(userId);
+
+-- Creating node and index for Gtags 
+LOAD CSV WITH HEADERS FROM "file:///C:/genome-tags.csv" AS row
+CREATE (:Gtags {tagId: row.tagId, tag: row.tag});
+CREATE INDEX ON :Gtags(tagId);
+
+-- Creating node and index for Links 
+LOAD CSV WITH HEADERS FROM "file:///C:/links.csv" AS row
+CREATE (:Links {movieId: row.movieId, imdbId: row.imdbId, tmdbId: row.tmdbId});
+CREATE INDEX ON :Links(movieId);
+
+-- Creating node and index for Gscores 
+LOAD CSV WITH HEADERS FROM "file:///C:/genome-scores.csv" AS row
+CREATE (:Gscores {movieId: row.movieId, tagId: row.tagId, relevance: row.relevance});
+CREATE INDEX ON :Links(movieId);
+
+
+
+--create relationship btw movies and links 
+MATCH (m:Movies),(l:Links)
+MERGE (l)-[ml:links]->(m)
+ON create SET  m.movieId = l.movieId
+
+--create relationship btw movies and Gscores 
+MATCH (m:Movies),(gs:Gscores)
+Merge (gs)-[ml:relevance]->(m)
+ON create SET gs.movieId=m.movieId
+
+--create relationship btw Gscores and Gtags 
+MATCH (gs:Gscores),(gt:Gtags)
+merge (gt)-[ml:taged_with]->(gs)
+ON create SET gs.tagId=gt.tagId
+
+--create relationship btw movies and Ratings 
+MATCH (m:Movies),(r:Ratings)
+Merge (r)-[ml:rate_as]->(m)
+ON create SET r.movieId=m.movieId
+
+--create relationship btw movies and Tags 
+MATCH (m:Movies),(t:Tags)
+Merge (t)-[ml:taged_as]->(m)
+ON create SET t.movieId=m.movieId
+
+
+

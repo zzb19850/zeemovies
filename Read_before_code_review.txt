@@ -1,0 +1,5 @@
+Being Data Engineer , I have never been to any role in my life where I have come across any graph database. This is my first attemp as i installed Neo4j in my laptop and tried to run and test the sample data. Because running the full data which you guys have mentioned cannot be possible with my laptop as it requires more memory to handle. 
+
+This is what I learned in this 4-5 days all about graph database at my own and there must be and surely are improvement points in the solution. I tried to model the data according to one unique key which i found to create relationship betweeen all nodes and that is Movie_Id. 
+
+Considering the fact that I am new to neo4j or Graph-db please review the code and do let me know the improvement points of it .
